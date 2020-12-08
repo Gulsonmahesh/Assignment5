@@ -4,7 +4,8 @@ import Productlist from './productlist';
 
 const ShowError = (props) => {
   return(
-    <div style={{display: (props.error) ? 'block' : 'none'}} className="alert alert-primary alert-dismissible fade show" role="alert">
+    (props.error) && 
+    <div className="alert alert-primary alert-dismissible fade show" role="alert">
       {<button type="button" className="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
       <span className="sr-only">Close</span>
@@ -37,19 +38,25 @@ const MainProduct = (props) => {
 function Assignment2() {
   const [product,setProduct] = useState([]);
   const [hasError,setError] = useState(false);  
-  
+  let productTag = '';
+
   async function fetchData() {
-    await fetch("http://localhost:4000/models")
+    await fetch("http://localhost:3001/models")
       .then(res => res.json())
       .then(res => {setProduct(res)})
-      .catch(err => {setError(true)});
+      .catch(err => {
+        setError(true);
+      });
   }
   useEffect(() => { fetchData() },[]);
 
+  if(product.length) {
+    productTag = <MainProduct rows={product}/>;
+  }
   return (
     <Fragment>
       <ShowError error={hasError}/> 
-      {(product.length>0) && (<MainProduct rows={product}/>)}
+      { productTag }
     </Fragment>
   )
 }
